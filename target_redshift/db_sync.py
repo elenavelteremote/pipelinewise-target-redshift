@@ -544,6 +544,7 @@ class DbSync:
                     {copy_credentials}
                     {copy_options}
                     DELIMITER ',' REMOVEQUOTES ESCAPE{compression_option}
+                    REGION '{region}'
                 """.format(
                     table=stage_table,
                     columns=", ".join([c["name"] for c in columns_with_trans]),
@@ -552,6 +553,9 @@ class DbSync:
                     copy_credentials=copy_credentials,
                     copy_options=copy_options,
                     compression_option=compression_option,
+                    region=self.connection_config.get(
+                        "aws_region", os.environ["AWS_REGION"]
+                    ),
                 )
                 self.logger.debug("Running query: {}".format(copy_sql))
                 cur.execute(copy_sql)
